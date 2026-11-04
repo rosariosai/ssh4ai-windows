@@ -1,0 +1,21 @@
+{
+  "appId": "com.ssh4ai.windows",
+  "productName": "ssh4ai",
+  "directories": { "output": "dist-store", "buildResources": "build" },
+  "files": ["src/**/*", "package.json", "node_modules/**/*"],
+  "win": {
+    "target": "appx",
+    "icon": "build/icon.ico",
+    "signAndEditExecutable": false
+  },
+  "appx": {
+    "identityName": "REPLACE_WITH_PACKAGE_IDENTITY_NAME",
+    "publisher": "REPLACE_WITH_PACKAGE_IDENTITY_PUBLISHER",
+    "publisherDisplayName": "rosariosai",
+    "applicationId": "ssh4ai",
+    "displayName": "ssh4ai",
+    "languages": ["en-US"],
+    "backgroundColor": "#0a0e14",
+    "showNameOnTiles": false
+  }
+}

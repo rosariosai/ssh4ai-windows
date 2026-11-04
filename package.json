@@ -1,6 +1,6 @@
 {
   "name": "ssh4ai-windows",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "ssh4ai \u2014 Windows 11 Native Desktop Client (.exe)",
   "main": "src/main/main.cjs",
   "scripts": {
@@ -8,7 +8,8 @@
     "dev": "electron .",
     "test:db": "node test-db.cjs",
     "build:exe": "set CSC_IDENTITY_AUTO_DISCOVERY=false&& electron-builder --win portable --x64",
-    "package:win": "electron-packager . \"ssh4ai\" --platform=win32 --arch=x64 --out=dist --overwrite --prune=true"
+    "package:win": "electron-packager . \"ssh4ai\" --platform=win32 --arch=x64 --out=dist --overwrite --prune=true",
+    "build:store": "electron-builder --config electron-builder-store.json --win appx --x64"
   },
   "keywords": [
     "ssh",
@@ -39,7 +40,8 @@
       "target": "portable",
       "artifactName": "ssh4ai-${version}.exe",
       "requestedExecutionLevel": "asInvoker",
-      "signAndEditExecutable": false
+      "signAndEditExecutable": false,
+      "icon": "build/icon.ico"
     },
     "directories": {
       "output": "dist"
