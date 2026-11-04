@@ -1,0 +1,13 @@
+/* Electron-only additions on top of the web stylesheet (web.css is an unmodified copy of the web app CSS) */
+html.electron #top-header { -webkit-app-region: drag; user-select: none; }
+html.electron #top-header button,
+html.electron #top-header input,
+html.electron #top-header .cluster-pill,
+html.electron #top-header .dock-switcher-group { -webkit-app-region: no-drag; }
+.win-controls { display: none; margin-left: 8px; gap: 0; align-items: stretch; align-self: stretch; }
+html.electron .win-controls { display: flex; }
+.win-btn { -webkit-app-region: no-drag; width: 40px; height: 44px; background: transparent; border: 0; color: var(--text-dim, #8b949e); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.win-btn .material-symbols-outlined { font-size: 16px; }
+.win-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.win-btn.win-close:hover { background: #e81123; color: #fff; }
+#top-header { padding-right: 0; }

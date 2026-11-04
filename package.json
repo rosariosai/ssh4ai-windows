@@ -1,0 +1,53 @@
+{
+  "name": "ssh4ai-windows",
+  "version": "3.1.1",
+  "description": "ssh4ai — Windows 11 Native Desktop Client (.exe)",
+  "main": "src/main/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "test:db": "node test-db.cjs",
+    "build:exe": "set CSC_IDENTITY_AUTO_DISCOVERY=false&& electron-builder --win portable --x64",
+    "package:win": "electron-packager . \"ssh4ai\" --platform=win32 --arch=x64 --out=dist --overwrite --prune=true"
+  },
+  "keywords": [
+    "ssh",
+    "terminal",
+    "homelab",
+    "windows11",
+    "fluent-design",
+    "electron"
+  ],
+  "author": "Rosario Savoia",
+  "license": "MIT",
+  "dependencies": {
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/addon-web-links": "^0.11.0",
+    "@xterm/xterm": "^5.5.0",
+    "sql.js": "^1.14.2",
+    "ssh2": "^1.15.0"
+  },
+  "devDependencies": {
+    "@electron/packager": "^20.3.0",
+    "electron": "^31.3.1",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.ssh4ai.windows",
+    "productName": "ssh4ai",
+    "win": {
+      "target": "portable",
+      "artifactName": "ssh4ai-${version}.exe",
+      "requestedExecutionLevel": "asInvoker",
+      "signAndEditExecutable": false
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ]
+  }
+}

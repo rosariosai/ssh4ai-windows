@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+Thumbs.db
+_backup-v2.4.0/
+_backup-v3.0.0/
+src/main.zip
+_t.cjs
