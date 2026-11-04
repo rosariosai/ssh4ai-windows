@@ -9,8 +9,8 @@
     "signAndEditExecutable": false
   },
   "appx": {
-    "identityName": "REPLACE_WITH_PACKAGE_IDENTITY_NAME",
-    "publisher": "REPLACE_WITH_PACKAGE_IDENTITY_PUBLISHER",
+    "identityName": "rosariosai.ssh4ai",
+    "publisher": "CN=51FB97C6-ED72-4EC5-B2DA-D32D3E2F37AC",
     "publisherDisplayName": "rosariosai",
     "applicationId": "ssh4ai",
     "displayName": "ssh4ai",
