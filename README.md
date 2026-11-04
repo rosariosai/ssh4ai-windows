@@ -88,3 +88,8 @@ Issues and pull requests are welcome. `npm run test:db` checks the vault and dat
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+## Story behind it
+
+Why I built ssh4ai and how it works with Claude: [I built a tool so Claude could work on my servers](https://rosariosai.substack.com/p/i-built-a-tool-so-claude-could-work) (The Daily Calf).
+
