@@ -17,6 +17,7 @@ Only the latest release is supported.
 - **Fallback key.** If `master.key` cannot be read or created, the app derives a fallback key from the Windows user name and the computer name with a fixed salt. That key is predictable to anyone who knows those two values, so treat the fallback as weak. Make sure the profile folder is writable so the random `master.key` is used.
 - **SSH server host keys are not verified**, so a man-in-the-middle between you and a server would go unnoticed.
 - **Private keys and passphrases** are protected with Windows DPAPI and are tied to the Windows user and computer. If DPAPI is unavailable the app refuses to store keys.
+- **Defences in place:** parameterized database queries and a Content-Security-Policy on the app window (since 3.1.2). The Electron `sandbox` option is not enabled yet.
 - **The release `.exe` is not code-signed.** Verify what you download, or build from source.
 
 ## Using it with AI assistants

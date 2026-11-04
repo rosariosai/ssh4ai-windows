@@ -253,8 +253,8 @@ class SSHSessionManager {
         `\x1b[36mf8410a9c82e1\x1b[0m   caddy:2.7-alpine      "caddy run --config…"   14 days ago    \x1b[32mUp 14 days (healthy)\x1b[0m      0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp         \x1b[32mcaddy-reverse-proxy\x1b[0m`,
         `\x1b[36m31a29df14ce8\x1b[0m   prom/prometheus       "/bin/prometheus --…"   14 days ago    \x1b[32mUp 14 days\x1b[0m                127.0.0.1:9090->9090/tcp                         \x1b[32mprometheus-v2\x1b[0m`,
         `\x1b[36mb2203d917f30\x1b[0m   grafana/grafana-oss   "/run.sh"                14 days ago    \x1b[32mUp 14 days (healthy)\x1b[0m      0.0.0.0:3000->3000/tcp                           \x1b[32mgrafana-oss\x1b[0m`,
-        `\x1b[36mc091f043ab29\x1b[0m   vaultwarden/server    "/vaultwarden"           9 days ago     \x1b[32mUp 9 days (healthy)\x1b[0m       127.0.0.1:8088->80/tcp, 3012/tcp                 \x1b[32mvaultwarden-sync\x1b[0m`,
-        `\x1b[36m592d3e4401fa\x1b[0m   hermes-agent:v1       "python main.py"         3 days ago     \x1b[32mUp 3 days\x1b[0m                 0.0.0.0:8000->8000/tcp                           \x1b[32mhermes-agent-worker\x1b[0m`
+        `\x1b[36mc091f043ab29\x1b[0m   nginx:1.27-alpine     "/docker-entrypoint.…"   9 days ago     \x1b[32mUp 9 days (healthy)\x1b[0m       127.0.0.1:8088->80/tcp, 3012/tcp                 \x1b[32mwebapp-sync\x1b[0m`,
+        `\x1b[36m592d3e4401fa\x1b[0m   example-worker:v1     "python main.py"         3 days ago     \x1b[32mUp 3 days\x1b[0m                 0.0.0.0:8000->8000/tcp                           \x1b[32mexample-worker\x1b[0m`
       ].join('\r\n');
     }
 
@@ -270,7 +270,7 @@ class SSHSessionManager {
         ` \x1b[32m✔\x1b[0m caddy-reverse-proxy Pulled                                       1.2s`,
         ` \x1b[32m✔\x1b[0m prometheus-v2 Pulled                                             0.8s`,
         ` \x1b[32m✔\x1b[0m grafana-oss Already up to date                                   0.3s`,
-        ` \x1b[32m✔\x1b[0m vaultwarden-sync Already up to date                              0.2s`,
+        ` \x1b[32m✔\x1b[0m webapp-sync     Already up to date                              0.2s`,
         `\x1b[32m[+] Network default  Created\x1b[0m`
       ].join('\r\n');
     }
@@ -312,7 +312,7 @@ class SSHSessionManager {
     }
 
     if (cmd.includes('docker exec')) {
-      return `\x1b[32mroot@hermes-agent-worker:/app# \x1b[0m`;
+      return `\x1b[32mroot@example-worker:/app# \x1b[0m`;
     }
 
     return `\x1b[90mExecuted: ${cmd}\x1b[0m`;

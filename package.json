@@ -1,7 +1,7 @@
 {
   "name": "ssh4ai-windows",
-  "version": "3.1.1",
-  "description": "ssh4ai — Windows 11 Native Desktop Client (.exe)",
+  "version": "3.1.2",
+  "description": "ssh4ai \u2014 Windows 11 Native Desktop Client (.exe)",
   "main": "src/main/main.cjs",
   "scripts": {
     "start": "electron .",

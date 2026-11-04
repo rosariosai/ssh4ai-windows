@@ -136,6 +136,7 @@ class DatabaseEngine {
     if (missing.length) {
       this.db.run('BEGIN');
       try {
+        // column names and types come from the fixed list above, never from user input
         for (const [name, type] of missing) this.db.run(`ALTER TABLE hosts ADD COLUMN ${name} ${type}`);
         this.db.run("UPDATE hosts SET auth_type = 'password' WHERE auth_type IS NULL OR auth_type = ''");
         this.db.run('COMMIT');
@@ -187,7 +188,7 @@ class DatabaseEngine {
         '192.0.2.4',
         22,
         'root',
-        vault.encrypt('SuperSecureGatewayPass!'),
+        vault.encrypt('demo-password'),
         'password',
         1,
         1,
@@ -197,12 +198,12 @@ class DatabaseEngine {
 
       this.db.run(insertHostSql, [
         'host-2',
-        'ZC1-EdgeCore',
+        'edge-core',
         'Core Infrastructure',
         '198.51.100.1',
         2222,
         'admin',
-        vault.encrypt('EdgeCorePass2026'),
+        vault.encrypt('demo-password'),
         'password',
         0,
         2,
@@ -217,7 +218,7 @@ class DatabaseEngine {
         '192.0.2.15',
         22,
         'hassio',
-        vault.encrypt('HomeAssistantSuperUser'),
+        vault.encrypt('demo-password'),
         'password',
         1,
         3,
@@ -236,11 +237,11 @@ class DatabaseEngine {
         VALUES (?, ?, ?, ?, ?, ?, ?);
       `;
 
-      this.db.run(insertMacroSql, ['m1', 1, 'ps', 'docker ps | grep hermes', 'terminal-cyan', 1, 1]);
-      this.db.run(insertMacroSql, ['m2', 2, 'compose', 'cd /var/lib/casaos/apps && docker compose pull', 'terminal-cyan', 1, 2]);
+      this.db.run(insertMacroSql, ['m1', 1, 'ps', 'docker ps | grep app', 'terminal-cyan', 1, 1]);
+      this.db.run(insertMacroSql, ['m2', 2, 'compose', 'cd /opt/stacks && docker compose pull', 'terminal-cyan', 1, 2]);
       this.db.run(insertMacroSql, ['m3', 3, 'cd', 'cd /etc/systemd/system', 'terminal-amber', 1, 3]);
-      this.db.run(insertMacroSql, ['m4', 4, 'cs ssh', 'cd /media/Raid1SS0/AppData/webssh', 'terminal-amber', 1, 4]);
-      this.db.run(insertMacroSql, ['m5', 5, 'bash', 'docker exec -it hermes bash', 'terminal-emerald', 1, 5]);
+      this.db.run(insertMacroSql, ['m4', 4, 'cd app', 'cd /opt/app', 'terminal-amber', 1, 4]);
+      this.db.run(insertMacroSql, ['m5', 5, 'bash', 'docker exec -it app bash', 'terminal-emerald', 1, 5]);
     }
 
     // Check scratchpad
@@ -257,7 +258,7 @@ class DatabaseEngine {
       this.db.run(insertPadSql, ['b1', 1, 'Deployment Notes', '# Deployment Checklist\n- docker compose up -d\n- check nginx reverse proxy certs\n- verify ufw status', now]);
       this.db.run(insertPadSql, ['b2', 2, 'VM IDs', '101: Example VM 1\n102: Example VM 2\n103: Example VM 3', now]);
       this.db.run(insertPadSql, ['b3', 3, 'Network & DNS', 'Subnets:\n- Example subnet: 192.0.2.0/24', now]);
-      this.db.run(insertPadSql, ['b4', 4, 'Cloudflare / Tunnels', 'Tunnel ID: cf-tunnel-homelab-prod\nGateway: caddy.internal.lan:8443', now]);
+      this.db.run(insertPadSql, ['b4', 4, 'Cloudflare / Tunnels', 'Tunnel ID: <your-tunnel-id>\nGateway: proxy.example.com:8443', now]);
       this.db.run(insertPadSql, ['b5', 5, 'Quick Snippets', 'systemctl list-unit-files --state=failed\njournalctl -u ssh -n 50 --no-pager', now]);
     }
 
@@ -275,10 +276,23 @@ class DatabaseEngine {
     };
 
     for (const [k, v] of Object.entries(defaultSettings)) {
-      const existing = this.db.exec(`SELECT value FROM settings WHERE key = '${k}'`);
-      if (existing.length === 0 || existing[0].values.length === 0) {
+      const existing = this._all('SELECT value FROM settings WHERE key = ?', [k]);
+      if (existing.length === 0) {
         this.db.run('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?);', [k, v]);
       }
+    }
+  }
+
+  // Run a SELECT with bound parameters and return rows as objects.
+  _all(sql, params = []) {
+    const stmt = this.db.prepare(sql);
+    try {
+      stmt.bind(params);
+      const rows = [];
+      while (stmt.step()) rows.push(stmt.getAsObject());
+      return rows;
+    } finally {
+      stmt.free();
     }
   }
 
@@ -333,7 +347,7 @@ class DatabaseEngine {
 
     const existing = this.getHostById(id, true);
 
-    let passwordEncrypted = existing ? (this.db.exec(`SELECT password_encrypted FROM hosts WHERE id = '${id}'`)[0]?.values[0]?.[0] || '') : '';
+    let passwordEncrypted = existing ? ((this._all('SELECT password_encrypted FROM hosts WHERE id = ?', [id])[0] || {}).password_encrypted || '') : '';
     if (hostData.password !== undefined && hostData.password !== '') {
       passwordEncrypted = vault.encrypt(hostData.password);
     }
@@ -417,9 +431,9 @@ class DatabaseEngine {
   }
 
   togglePin(id) {
-    const res = this.db.exec(`SELECT is_pinned FROM hosts WHERE id = '${id}';`);
-    if (res.length === 0 || res[0].values.length === 0) return false;
-    const currentPin = res[0].values[0][0];
+    const rows = this._all('SELECT is_pinned FROM hosts WHERE id = ?', [id]);
+    if (rows.length === 0) return false;
+    const currentPin = rows[0].is_pinned;
     const newPin = currentPin ? 0 : 1;
     this.db.run('UPDATE hosts SET is_pinned = ? WHERE id = ?;', [newPin, id]);
     this._saveToDisk();
@@ -439,8 +453,8 @@ class DatabaseEngine {
 
   saveMacro(macroData) {
     const slot = Number(macroData.key_slot);
-    const existing = this.db.exec(`SELECT id FROM macros WHERE key_slot = ${slot};`);
-    if (existing.length > 0 && existing[0].values.length > 0) {
+    const existing = this._all('SELECT id FROM macros WHERE key_slot = ?', [slot]);
+    if (existing.length > 0) {
       this.db.run(`
         UPDATE macros SET
           name = ?,
@@ -487,8 +501,8 @@ class DatabaseEngine {
   saveScratchpad(bucketIndex, title, content) {
     const idx = Number(bucketIndex);
     const now = new Date().toISOString();
-    const existing = this.db.exec(`SELECT id FROM scratchpad WHERE bucket_index = ${idx};`);
-    if (existing.length > 0 && existing[0].values.length > 0) {
+    const existing = this._all('SELECT id FROM scratchpad WHERE bucket_index = ?', [idx]);
+    if (existing.length > 0) {
       this.db.run(`
         UPDATE scratchpad SET
           title = COALESCE(?, title),

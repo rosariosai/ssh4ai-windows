@@ -57,6 +57,7 @@ See also [SECURITY.md](SECURITY.md). In short:
 - **`master.key` sits next to the data** in your user profile. The encryption protects against copying the database alone, not against access to your whole profile.
 - **SSH server host keys are not verified yet**, so a man-in-the-middle on the network would not be detected.
 - Private keys are DPAPI-protected and tied to your Windows user.
+- Database queries use bound parameters, and the app window has a Content-Security-Policy that only allows its own scripts, styles and fonts.
 
 ## Using it with an AI assistant
 
@@ -82,7 +83,7 @@ Change history: `CHANGES-v3.0.0.md`, `CHANGES-v3.1.0.md`, `CHANGES-v3.1.1.md`.
 
 ## Contributing
 
-Issues and pull requests are welcome. There is no automated test suite beyond `npm run test:db`.
+Issues and pull requests are welcome. `npm run test:db` checks the vault and database (including that quotes in IDs cannot alter SQL); more tests are welcome.
 
 ## License
 
