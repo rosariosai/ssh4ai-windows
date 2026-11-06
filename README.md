@@ -21,6 +21,10 @@ Everything stays on your computer. There is no account and no telemetry.
 
 ## Install
 
+**Microsoft Store (recommended):** [get ssh4ai from the Microsoft Store](https://apps.microsoft.com/detail/9np25s5l8ck2), free and updated automatically.
+
+**Portable download:**
+
 1. Download `ssh4ai-<version>.exe` from the [Releases](https://github.com/rosariosai/ssh4ai-windows/releases) page. It is a portable app: no installer, just run it.
 2. **The file is not code-signed**, so Windows SmartScreen may show "Windows protected your PC". Click **More info**, then **Run anyway**. If you prefer not to trust a binary, build it yourself (below); the source is all here.
 
